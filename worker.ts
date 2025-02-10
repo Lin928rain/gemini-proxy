@@ -19,6 +19,9 @@ Deno.serve(async (req: Request) => {
     return new Response("Internal Server Error", { status: 500 }); // Indicate missing API key
   }
 
+  // *** 临时添加的日志输出 ***
+  console.log("GEMINI_API_KEY:", apiKey);
+
   // 3. 构建目标 URL (with API Key as Query Parameter)
   let targetUrl = `${GEMINI_API_URL}${pathname}${url.search}`;
   // Add the API key correctly:
