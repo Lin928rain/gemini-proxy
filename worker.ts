@@ -1,4 +1,4 @@
-// main.ts
+// main.ts (修改版)
 const GEMINI_API_URL = "https://generativelanguage.googleapis.com";
 
 Deno.serve(async (req: Request) => {
@@ -14,31 +14,21 @@ Deno.serve(async (req: Request) => {
   }
 
   // 2. 获取 Gemini API Key (from Environment Variable)
-  //const apiKey = Deno.env.get("GEMINI_API_KEY");
-  const apiKey = "AIzaSyBd15VwcyfZNa8DaHoBHesYqwYBCSj_1s8"
+  const apiKey = Deno.env.get("GEMINI_API_KEY");
   if (!apiKey) {
     return new Response("Internal Server Error", { status: 500 }); // Indicate missing API key
   }
 
-  // *** 临时添加的日志输出 ***
-  console.log("GEMINI_API_KEY:", apiKey);
-
-  // 3. 构建目标 URL (with API Key as Query Parameter)
-  let targetUrl = `${GEMINI_API_URL}${pathname}${url.search}`;
-  // Add the API key correctly:
-  if (targetUrl.includes("?")) {
-    targetUrl += `&key=${apiKey}`;
-  } else {
-    targetUrl += `?key=${apiKey}`;
-  }
-
-  // 4. 创建代理请求
-  const proxyReq = new Request(targetUrl, {
-    method: req.method,
-    headers: req.headers,
-    body: req.body,
-    redirect: "manual",
-  });
+  // 3. 构建目标 URL (显式构建查询参数)
+  const targetUrl = new URL(`${GEMINI_API_URL}${pathname}`);
+  targetUrl.searchParams.set("key", apiKey); // 明确设置 key 参数, 会覆盖任何已有的同名参数
+    // 4. 创建代理请求
+    const proxyReq = new Request(targetUrl, {
+        method: req.method,
+        headers: req.headers,
+        body: req.body, // 确保 body 被正确传递
+        redirect: "manual",
+    });
 
   // 5. 移除 headers
   proxyReq.headers.delete("host");
@@ -63,6 +53,5 @@ Deno.serve(async (req: Request) => {
     return new Response("Proxy Error", { status: 502 }); // Bad Gateway
   }
 });
-const apiKeytest = Deno.env.get("GEMINI_API_KEY");
-console.log("GEMINI_API_KEY:", apiKeytest);
-console.log("Gemini API proxy server running test...");
+
+console.log("Gemini API proxy server running...");
