@@ -14,7 +14,8 @@ Deno.serve(async (req: Request) => {
   }
 
   // 2. 获取 Gemini API Key (from Environment Variable)
-  const apiKey = Deno.env.get("GEMINI_API_KEY");
+  //const apiKey = Deno.env.get("GEMINI_API_KEY");
+  const apiKey = "AIzaSyBd15VwcyfZNa8DaHoBHesYqwYBCSj_1s8"
   if (!apiKey) {
     return new Response("Internal Server Error", { status: 500 }); // Indicate missing API key
   }
