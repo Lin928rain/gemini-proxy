@@ -62,5 +62,6 @@ Deno.serve(async (req: Request) => {
     return new Response("Proxy Error", { status: 502 }); // Bad Gateway
   }
 });
-
-console.log("Gemini API proxy server running...");
+const apiKeytest = Deno.env.get("GEMINI_API_KEY");
+console.log("GEMINI_API_KEY:", apiKeytest);
+console.log("Gemini API proxy server running test...");
